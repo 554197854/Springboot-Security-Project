@@ -3,8 +3,11 @@ package com.springboot.security.dao;
 import com.springboot.security.bean.User;
 import com.springboot.security.bean.UserExample;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+@Mapper
 public interface UserMapper {
     int countByExample(UserExample example);
 

@@ -1,21 +1,27 @@
 package com.springboot.security.bean;
 
+import org.hibernate.validator.constraints.Length;
+
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 import java.sql.Timestamp;
 import java.util.Date;
 
 public class User {
     private Integer id;
 
+    @Pattern(regexp="(^[a-zA-Z0-9]{4,16}$)|(^[\\u2E80-\\u9FFF]{2,5}$)",message="用户名格式错误！")
     private String username;
-
+    @Length(min = 6,max = 16)
     private String password;
-
+    @Email(message = "邮箱格式错误！")
     private String email;
 
     private Timestamp createTime;
 
     private Integer active;
-
+    @Pattern(regexp = "1[3|4|5|7|8][0-9]\\d{8}",message = "用户手机号输入错误！")
     private String phone;
 
     private String icon;

@@ -3,8 +3,11 @@ package com.springboot.security.dao;
 import com.springboot.security.bean.Role;
 import com.springboot.security.bean.RoleExample;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+@Mapper
 public interface RoleMapper {
     int countByExample(RoleExample example);
 

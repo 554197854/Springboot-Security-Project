@@ -3,8 +3,10 @@ package com.springboot.security.dao;
 import com.springboot.security.bean.MenuRole;
 import com.springboot.security.bean.MenuRoleExample;
 import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+@Mapper
 public interface MenuRoleMapper {
     int countByExample(MenuRoleExample example);
 

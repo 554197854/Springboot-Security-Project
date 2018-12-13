@@ -3,8 +3,11 @@ package com.springboot.security.dao;
 import com.springboot.security.bean.Menu;
 import com.springboot.security.bean.MenuExample;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+@Mapper
 public interface MenuMapper {
     int countByExample(MenuExample example);
 
