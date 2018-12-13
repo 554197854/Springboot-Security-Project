@@ -1,14 +1,21 @@
 package com.springboot.security.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
-public class User {
+public class User implements UserDetails { //实现UserDetails 配合security的用户验证
     private Integer id;
 
     @Pattern(regexp="(^[a-zA-Z0-9]{4,16}$)|(^[\\u2E80-\\u9FFF]{2,5}$)",message="用户名格式错误！")
@@ -26,6 +33,8 @@ public class User {
 
     private String icon;
 
+    private List<Role> roles;
+
     public Integer getId() {
         return id;
     }
@@ -38,10 +47,51 @@ public class User {
         return username;
     }
 
+    @JsonIgnore//序列化时忽略注解
+    @Override
+    public boolean isAccountNonExpired() { //是否没有用户存活时间
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonLocked() { //没有锁住账户
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isCredentialsNonExpired() { //没有有过期
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isEnabled() { //是否激活
+        if(this.active==0){
+            return false;
+        }else{
+            return true;
+        }
+
+    }
+
     public void setUsername(String username) {
         this.username = username == null ? null : username.trim();
     }
 
+    @JsonIgnore
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+        return authorities;
+    }
+
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
