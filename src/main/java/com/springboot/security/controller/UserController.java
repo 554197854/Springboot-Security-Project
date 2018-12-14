@@ -4,11 +4,10 @@ import com.springboot.security.bean.Msg;
 import com.springboot.security.bean.User;
 import com.springboot.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -72,5 +71,11 @@ public class UserController {
             return Msg.success();//如果没有错误，添加用户返回success
         }
 
+    }
+
+    @RequestMapping("/login_p")
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Msg login() {
+        return Msg.fail();
     }
 }

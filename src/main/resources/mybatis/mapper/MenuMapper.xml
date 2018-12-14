@@ -9,6 +9,21 @@
     <result column="icon" property="icon" jdbcType="VARCHAR" />
     <result column="pid" property="pid" jdbcType="INTEGER" />
   </resultMap>
+
+  <resultMap id="BaseResultMapWithRole" type="com.springboot.security.bean.Menu" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="path" property="path" jdbcType="VARCHAR" />
+    <result column="component" property="component" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="pid" property="pid" jdbcType="INTEGER" />
+    <collection property="roles" ofType="com.springboot.security.bean.Role">
+      <id column="rid" property="id" />
+      <result column="rname" property="name" />
+      <result column="rnamezh" property="nameZh" />
+    </collection>
+  </resultMap>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -90,6 +105,12 @@
     from menu
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+
+  <select id="getAllMenu" resultMap="BaseResultMapWithRole">
+    select m.*,r.`id` as rid,r.`name` as rname,r.`nameZh` as rnamezh from menu m left join menu_role mr on m.`id`=mr.`mid` left join role r on mr.`rid`=r.`id`  order by m.`id` desc
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from menu
     where id = #{id,jdbcType=INTEGER}

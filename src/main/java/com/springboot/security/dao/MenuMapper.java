@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface MenuMapper {
+    List<Menu> getAllMenu();
+
     int countByExample(MenuExample example);
 
     int deleteByExample(MenuExample example);
