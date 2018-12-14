@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +19,7 @@ import java.util.List;
  * @author N
  * @create 2018/12/13 -- 16:39
  */
-@Transactional
+@EnableTransactionManagement(proxyTargetClass = true)
 @Service
 public class UserService implements UserDetailsService {
 

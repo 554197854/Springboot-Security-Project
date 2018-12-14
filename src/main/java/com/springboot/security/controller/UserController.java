@@ -5,9 +5,12 @@ import com.springboot.security.bean.User;
 import com.springboot.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -19,12 +22,13 @@ import java.util.Map;
  * @author N
  * @create 2018/12/13 -- 16:55
  */
-@RestController
+@Controller
 public class UserController {
     @Autowired
     UserService userService;
 
     //检查用户名
+    @ResponseBody
     @GetMapping("/checkUsername")
     public Msg checkUsername(String username){
         String regex="(^[a-zA-Z0-9]{4,16}$)|(^[\u2E80-\u9FFF]{2,5}$)";
@@ -74,8 +78,25 @@ public class UserController {
     }
 
     @RequestMapping("/login_p")
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public Msg login() {
-        return Msg.fail();
+    //@ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String login_p() {
+        System.out.println("login_p");
+        return "success";
     }
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public ModelAndView login(
+            @RequestParam(value = "error", required = false) String error,
+            @RequestParam(value = "logout", required = false) String logout) {
+        ModelAndView model = new ModelAndView();
+        if (error != null) {
+            model.addObject("error", "不正确的用户名和密码");
+        }
+        if (logout != null) {
+            model.addObject("msg", "你已经成功退出");
+        }
+        model.setViewName("login");
+        return model;
+    }
+
 }

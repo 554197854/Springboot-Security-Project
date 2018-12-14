@@ -9,13 +9,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-public class User implements UserDetails { //实现UserDetails 配合security的用户验证
+public class User implements UserDetails, Serializable { //实现UserDetails 配合security的用户验证
     private Integer id;
 
     @Pattern(regexp="(^[a-zA-Z0-9]{4,16}$)|(^[\\u2E80-\\u9FFF]{2,5}$)",message="用户名格式错误！")

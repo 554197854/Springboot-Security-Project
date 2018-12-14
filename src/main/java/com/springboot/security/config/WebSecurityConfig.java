@@ -69,7 +69,7 @@ import java.util.Map;
 * */
 
 @Configuration
-@EnableWebSecurity //会多import一些类
+//@EnableWebSecurity //会多import一些类
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     //重写三个configure相关的配置
@@ -108,14 +108,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     public void configure(WebSecurity web) throws Exception { //配置一些可忽略拦截的静态资源
         web.ignoring()
-                .antMatchers("/assets/**", "/login.html","/register.html");
+                .antMatchers("/assets/**","login.html","/login.html","/register.html");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception { //对http的配置，是配置中最复杂的一部分，因为本项目模块涉及到细粒度的权限资源访问管理。即要与数据库ROLE权限相关联
-        System.out.println("123");
         http.authorizeRequests()
-                .antMatchers("/druid/**","/register","/checkUsername","/checkEmail").permitAll()
+                .antMatchers("/druid/**","/register","/checkUsername","/checkEmail","/login").permitAll()
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
 
                     @Override
@@ -134,7 +133,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
          *
          */
                 .and()
-                .formLogin().loginPage("/login_p").loginProcessingUrl("/login")
+                .formLogin().loginPage("/login").loginProcessingUrl("/login")
                 .usernameParameter("username").passwordParameter("password")
                 .failureHandler(new AuthenticationFailureHandler() {
                     @Override

@@ -14,15 +14,20 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class SecurityApplicationTests {
-    @Autowired
-    UserMapper userMapper;
+//    @Autowired
+//    UserMapper userMapper;
     @Autowired
     MenuService menuService;
     @Test
     public void contextLoads() {
-        System.out.println(userMapper.selectByUsername("ni"));
+//        System.out.println(userMapper.selectByUsername("ni"));
         List<Menu> allMenu = menuService.getAllMenu();
         System.out.println(allMenu.size());
+        for (Menu menu : allMenu) {
+            System.out.println(menu.getPath());
+            System.out.println(menu.getRoles());
+        }
+
     }
 
 }
