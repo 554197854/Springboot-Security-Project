@@ -108,7 +108,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     public void configure(WebSecurity web) throws Exception { //配置一些可忽略拦截的静态资源
         web.ignoring()
                 .antMatchers("/assets/**","/login","/login.html","/register.html","/register");
-                //一定要
+                //一定要把登录注册的相关路径页面和css js资源放在这里放行
 
     }
 
