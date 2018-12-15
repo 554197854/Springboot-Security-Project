@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -108,13 +107,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     public void configure(WebSecurity web) throws Exception { //配置一些可忽略拦截的静态资源
         web.ignoring()
-                .antMatchers("/assets/**","login.html","/login.html","/register.html");
+                .antMatchers("/assets/**","/login","/login.html","/register.html","/register");
+                //一定要
+
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception { //对http的配置，是配置中最复杂的一部分，因为本项目模块涉及到细粒度的权限资源访问管理。即要与数据库ROLE权限相关联
         http.authorizeRequests()
-                .antMatchers("/druid/**","/register","/checkUsername","/checkEmail","/login").permitAll()
+                .antMatchers("/druid/**","/register","/checkUsername","/checkEmail").permitAll()
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
 
                     @Override
@@ -133,7 +134,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
          *
          */
                 .and()
-                .formLogin().loginPage("/login").loginProcessingUrl("/login")
+                .formLogin().loginPage("/login").loginProcessingUrl("/login1")
                 .usernameParameter("username").passwordParameter("password")
                 .failureHandler(new AuthenticationFailureHandler() {
                     @Override

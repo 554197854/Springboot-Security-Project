@@ -4,9 +4,7 @@ import com.springboot.security.bean.Msg;
 import com.springboot.security.bean.User;
 import com.springboot.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -60,9 +58,18 @@ public class UserController {
         }
     }
 
+
+    @RequestMapping("/register_P")
+    //@ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String register_p() {
+        System.out.println("register_p");
+        return "register_p";
+    }
+
+
     //注册用户
     @PostMapping("/register")
-    public Msg userRegister(@Valid User user, BindingResult bindingResult, HttpServletRequest request){//@Valid与BindingResult联合使用 验证提交User类的是否符合字段注解
+    public Msg register(@Valid User user, BindingResult bindingResult, HttpServletRequest request){//@Valid与BindingResult联合使用 验证提交User类的是否符合字段注解
         Map<String, Object> map =new HashMap<String, Object>();
         if(bindingResult.hasErrors()){
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -81,7 +88,7 @@ public class UserController {
     //@ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String login_p() {
         System.out.println("login_p");
-        return "success";
+        return "login";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
