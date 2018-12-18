@@ -5,6 +5,7 @@ import com.springboot.security.bean.Msg;
 import com.springboot.security.common.UserUtils;
 import com.springboot.security.component.MyAccessDecisionManager;
 import com.springboot.security.component.MyAccessDeniedHandler;
+import com.springboot.security.component.MyAuthenticationSuccessHandler;
 import com.springboot.security.component.MySecurityMetadataSource;
 import com.springboot.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +85,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Autowired
     MyAccessDeniedHandler myAccessDeniedHandler;
+    @Autowired
+    MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {//自定义验证配置
         auth.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());//验证基于数据库自定义UserDetailsService，
@@ -107,7 +110,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     public void configure(WebSecurity web) throws Exception { //配置一些可忽略拦截的静态资源
         web.ignoring()
-                .antMatchers("/assets/**","/login","/login.html","/register.html","/register");
+                .antMatchers("/assets/**","/login_p","/login.html","/register.html","/register_p","/register","/checkUsername","/checkEmail","/druid/**");
                 //一定要把登录注册的相关路径页面和css js资源放在这里放行
 
     }
@@ -115,7 +118,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception { //对http的配置，是配置中最复杂的一部分，因为本项目模块涉及到细粒度的权限资源访问管理。即要与数据库ROLE权限相关联
         http.authorizeRequests()
-                .antMatchers("/druid/**","/register","/checkUsername","/checkEmail").permitAll()
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
 
                     @Override
@@ -134,7 +136,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
          *
          */
                 .and()
-                .formLogin().loginPage("/login").loginProcessingUrl("/login1")
+                .rememberMe()
+                .and()
+                .formLogin().loginPage("/login_p").loginProcessingUrl("/login")
                 .usernameParameter("username").passwordParameter("password")
                 .failureHandler(new AuthenticationFailureHandler() {
                     @Override
@@ -166,23 +170,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                         out.close();
                     }
                 })
-                .successHandler(new AuthenticationSuccessHandler() {
-                    @Override
-                    public void onAuthenticationSuccess(HttpServletRequest req,
-                                                        HttpServletResponse resp,
-                                                        Authentication auth) throws IOException {
-                        resp.setContentType("application/json;charset=utf-8");
-                        Msg msg = Msg.success();
-                        Map map =new HashMap();
-                        map.put("登录成功!", UserUtils.getUserDetils());
-                        msg.setExtend(map);
-                        ObjectMapper om = new ObjectMapper();
-                        PrintWriter out = resp.getWriter();
-                        out.write(om.writeValueAsString(msg));
-                        out.flush();
-                        out.close();
-                    }
-                })
+                .successHandler(myAuthenticationSuccessHandler)
                 .permitAll()
                 .and()
                 .logout().permitAll()

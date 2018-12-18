@@ -11,6 +11,10 @@
     <result column="phone" property="phone" jdbcType="CHAR" />
     <result column="icon" property="icon" jdbcType="VARCHAR" />
   </resultMap>
+  <resultMap id="lazyLoadRoles" type="com.springboot.security.bean.User" extends="BaseResultMap">
+    <collection property="roles" ofType="com.springboot.security.bean.Role" select="com.springboot.security.dao.UserMapper.getRolesByUserId"
+                column="id"></collection>
+  </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -93,13 +97,15 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <select id="selectByUsername" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectByUsername" resultMap="lazyLoadRoles" parameterType="java.lang.String" >
     select
-    <include refid="Base_Column_List" />
+    *
     from user
     where username = #{username,jdbcType=VARCHAR}
   </select>
-
+  <select id="getRolesByUserId" resultType="com.springboot.security.bean.Role">
+    SELECT r.* FROM user_role u,role r where u.rid=r.id AND u.uid=#{id}
+  </select>
 
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -112,7 +118,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.springboot.security.bean.User" >
+  <insert id="insert" parameterType="com.springboot.security.bean.User" useGeneratedKeys="true" keyProperty="id" >
     insert into user (id, username, password, 
       email, create_time, active, 
       phone, icon)

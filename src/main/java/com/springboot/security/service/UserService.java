@@ -2,8 +2,11 @@ package com.springboot.security.service;
 
 import com.springboot.security.bean.User;
 import com.springboot.security.bean.UserExample;
+import com.springboot.security.bean.UserRole;
 import com.springboot.security.dao.UserMapper;
+import com.springboot.security.dao.UserRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,6 +30,8 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private UserRoleMapper userRoleMapper;
     //检测用户名是否已被注册
     @Transactional(readOnly = true)
     public Boolean checkUsername(String username){
@@ -57,13 +63,18 @@ public class UserService implements UserDetailsService {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();//security官方推荐加密方式
         String encode = encoder.encode(user.getPassword());
         user.setPassword(encode);
-        if(user.getIcon().isEmpty()){
+        System.out.println(user.getPassword());
+        if(user.getIcon()==null){
             String realPath = request.getServletContext().getRealPath("");
 
             user.setIcon(realPath+"resources/static/images/default_icon.png");
         }
         user.setActive(0);//设置未激活状态
         userMapper.insert(user);
+        UserRole ur= new UserRole();
+        ur.setRid(4);
+        ur.setUid(user.getId());
+        userRoleMapper.insert(ur);
     }
 
 

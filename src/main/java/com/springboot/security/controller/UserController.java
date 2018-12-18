@@ -4,13 +4,20 @@ import com.springboot.security.bean.Msg;
 import com.springboot.security.bean.User;
 import com.springboot.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +36,7 @@ public class UserController {
     @ResponseBody
     @GetMapping("/checkUsername")
     public Msg checkUsername(String username){
+        System.out.println(username);
         String regex="(^[a-zA-Z0-9]{4,16}$)|(^[\u2E80-\u9FFF]{2,5}$)";
         if(!username.matches(regex)){
             return Msg.fail().add("vn_msg", "用户名格式错误！");
@@ -43,56 +51,58 @@ public class UserController {
     }
 
     //检查邮箱
+    @ResponseBody
     @GetMapping("/checkEmail")
     public Msg checkEmail(String email){
-        String regex="^([a-z0-9A-Z]+[-|\\\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\\\.)+[a-zA-Z]{2,}$";
+        System.out.println(email);
+        String regex="^(\\w)+(\\.\\w+)*@(\\w)+((\\.\\w+)+)$";
         if(!email.matches(regex)){
-            return Msg.fail().add("vm_msg", "邮箱格式错误！");
+            return Msg.fail().add("ve_msg", "邮箱格式错误！");
         }
         boolean b = userService.checkEmail(email);
         if(b){
-            return Msg.success().add("vm_msg", "邮箱可用！");
+            return Msg.success().add("ve_msg", "邮箱可用！");
 
         }else{
-            return Msg.fail().add("vm_msg", "邮箱不可用！");
+            return Msg.fail().add("ve_msg", "邮箱不可用！");
         }
     }
 
 
-    @RequestMapping("/register_P")
+    @GetMapping("/register_p")
     //@ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String register_p() {
         System.out.println("register_p");
-        return "register_p";
+        return "register";
     }
 
 
     //注册用户
     @PostMapping("/register")
-    public Msg register(@Valid User user, BindingResult bindingResult, HttpServletRequest request){//@Valid与BindingResult联合使用 验证提交User类的是否符合字段注解
+    public ModelAndView register(@Valid User user, BindingResult bindingResult, HttpServletRequest request, Model model){//@Valid与BindingResult联合使用 验证提交User类的是否符合字段注解
         Map<String, Object> map =new HashMap<String, Object>();
         if(bindingResult.hasErrors()){
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
             for(FieldError fieldError:fieldErrors){
                 map.put(fieldError.getField(),fieldError.getDefaultMessage());
             }
-            return Msg.fail().add("error",map);//如果出现错误字段，添加进Msg中返回
+            model.addAttribute("error",Msg.fail().add("error",map));
+            model.addAttribute("user",user);
+
+            return new ModelAndView("register");//如果出现错误字段，添加进Msg中返回
         }else {
             userService.insertUser(user,request);
-            return Msg.success();//如果没有错误，添加用户返回success
+            return new ModelAndView("");
         }
 
     }
 
-    @RequestMapping("/login_p")
-    //@ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public String login_p() {
-        System.out.println("login_p");
-        return "login";
-    }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView login(
+
+
+
+    @RequestMapping(value = "/login_p", method = RequestMethod.GET)
+    public ModelAndView login_p(
             @RequestParam(value = "error", required = false) String error,
             @RequestParam(value = "logout", required = false) String logout) {
         ModelAndView model = new ModelAndView();
@@ -106,4 +116,57 @@ public class UserController {
         return model;
     }
 
+
+    @RequestMapping("/active")
+    public String active(){
+        return "active";
+    }
+
+    @ResponseBody
+    @RequestMapping("/index")
+    public String index(){
+        return "active";
+    }
+//    @Autowired
+//    private AuthenticationManager authenticationManager;
+
+//    @RequestMapping(value="/login")
+//    public ModelAndView login(@RequestParam(defaultValue="") String username,
+//                                          @RequestParam(defaultValue="") String password,
+//                                          HttpServletRequest request){
+//        //
+//        username = username.trim();
+//
+//        //返回登录页面
+//        ModelAndView model = new ModelAndView();
+//        model.setViewName("login");
+//
+//        if(username==null||username.isEmpty()||
+//                password==null||password.isEmpty())
+//        {
+//            return model;
+//        }
+//
+//        //向AJAX请求返回消息提醒(json字符串)
+//        model.setViewName("index");
+//        UsernamePasswordAuthenticationToken authRequest =
+//                new UsernamePasswordAuthenticationToken(username, password);
+//        //
+//        try {
+//            Authentication authentication = authenticationManager.authenticate(authRequest);
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            HttpSession session = request.getSession();
+//            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext()); // 这个非常重要，否则验证后将无法登陆
+//
+//            model.addObject("message","登录用户："+authentication.getName());
+//            model.addObject("ok",1);//这样view/customLogin.jsp得到成功标记后可以做url跳转。
+//        } catch (AuthenticationException ex) {
+//            model.addObject("message","用户名或密码错误");
+//            model.addObject("ok",0);//为了view/customLogin.jsp得到失败标记后可以提醒用户重新输入用户名、密码。
+//        }//end catch
+//        return model;
+//    }//end handler
 }
+
+
+

@@ -33,23 +33,27 @@
                             <div class="logo text-center"><img src="assets/img/logo-dark.png" th:src="@{assets/img/logo-dark.png}" alt="Klorofil Logo"></div>
                             <p class="lead">Login to your account</p>
                         </div>
-                        <form class="form-auth-small" action="index.php">
+                        <form class="form-auth-small" action="/login" method="post">
                             <div class="form-group">
-                                <label for="signin-email" class="control-label sr-only">Email</label>
-                                <input type="email" class="form-control" id="signin-email" value="samuel.gold@domain.com" placeholder="Email">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                    <input class="form-control" placeholder="Username" type="text" name="username">
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="signin-password" class="control-label sr-only">Password</label>
-                                <input type="password" class="form-control" id="signin-password" value="thisisthepassword" placeholder="Password">
+                                <input type="password" class="form-control" id="signin-password" name="password"  placeholder="Password">
                             </div>
+
                             <div class="form-group clearfix">
                                 <label class="fancy-checkbox element-left">
-                                    <input type="checkbox">
+                                    <input type="checkbox" name="remember-me">
                                     <span>Remember me</span>
                                 </label>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-lg btn-block">LOGIN</button>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
                             <div class="bottom">
+                                <span class="helper-text"><i class="fas fa-registered"></i> <a href="/register_p">No Account?Go Register</a></span>
                                 <span class="helper-text"><i class="fa fa-lock"></i> <a href="#">Forgot password?</a></span>
                             </div>
                         </form>

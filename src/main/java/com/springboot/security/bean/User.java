@@ -19,6 +19,21 @@ import java.util.List;
 public class User implements UserDetails, Serializable { //实现UserDetails 配合security的用户验证
     private Integer id;
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", createTime=" + createTime +
+                ", active=" + active +
+                ", phone='" + phone + '\'' +
+                ", icon='" + icon + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
+
     @Pattern(regexp="(^[a-zA-Z0-9]{4,16}$)|(^[\\u2E80-\\u9FFF]{2,5}$)",message="用户名格式错误！")
     private String username;
     @Length(min = 6,max = 16)
@@ -69,11 +84,7 @@ public class User implements UserDetails, Serializable { //实现UserDetails 配
     @JsonIgnore
     @Override
     public boolean isEnabled() { //是否激活
-        if(this.active==0){
-            return false;
-        }else{
-            return true;
-        }
+        return true;
 
     }
 

@@ -1,5 +1,6 @@
 package com.springboot.security.dao;
 
+import com.springboot.security.bean.Role;
 import com.springboot.security.bean.User;
 import com.springboot.security.bean.UserExample;
 import java.util.List;
@@ -21,6 +22,9 @@ public interface UserMapper {
     int insertSelective(User record);
 
     List<User> selectByExample(UserExample example);
+
+    List<Role> getRolesByUserId(Long id);
+
 
     User selectByPrimaryKey(Integer id);
 
