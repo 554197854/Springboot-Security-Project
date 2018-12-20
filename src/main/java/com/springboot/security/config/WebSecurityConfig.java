@@ -136,7 +136,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
          *
          */
                 .and()
-                .rememberMe()
+                .rememberMe().rememberMeParameter("remember")//记住我的别名为remember 登录表单添加一个name为remember的checkbox即可
                 .and()
                 .formLogin().loginPage("/login_p").loginProcessingUrl("/login")
                 .usernameParameter("username").passwordParameter("password")
