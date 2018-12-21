@@ -1,24 +1,14 @@
 package com.springboot.security.service;
 
 import com.springboot.security.bean.Menu;
-import com.springboot.security.dao.MenuMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * @author N
- * @create 2018/12/14 -- 17:42
+ * @create 2018/12/21 -- 21:32
  * @email 554197854@qq.com
  */
-@Service
-public class MenuService {
-
-    @Autowired
-    MenuMapper menuMapper;
-
-    public List<Menu> getAllMenu() {
-        return menuMapper.getAllMenu();
-    }
+public interface MenuService {
+    public List<Menu> getAllMenu();
 }
